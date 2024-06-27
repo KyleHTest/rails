@@ -1,0 +1,44 @@
+trigger:
+- develop
+- main
+
+pool:
+  vmImage: ubuntu-latest
+resources:
+  repositories:
+    - repository: AzureBoardsScript
+      ref: master
+      type: git
+      name: Implementations
+variables:
+  - group: polaris-Kyle
+steps:
+- checkout: self
+- task: SynopsysSecurityScan@1
+  displayName: 'Polaris SAST Scan'
+  inputs:
+    scanType: polaris
+    bridge_polaris_serverUrl: '$(BRIDGE_POLARIS_SERVERURL)'
+    bridge_polaris_accesstoken: '$(BRIDGE_POLARIS_ACCESSTOKEN)'
+    bridge_polaris_application_name: 'kyleh'
+    bridge_polaris_project_name: 'AzurePRComment'
+    bridge_polaris_assessment_types: 'SAST'
+    bridge_polaris_branch_name: '$(Build.SourceBranchName)'
+- task: SynopsysSecurityScan@1
+  inputs:
+    scanType: 'polaris'
+    bridge_polaris_serverUrl: '$(BRIDGE_POLARIS_SERVERURL)'
+    bridge_polaris_accessToken: '$(BRIDGE_POLARIS_ACCESSTOKEN)'
+    bridge_polaris_application_name: 'KyleHWithDAST'
+    bridge_polaris_project_name: 'SignatureScanDemo'
+    bridge_polaris_assessment_types: 'SCA'
+    bridge_polaris_branch_name: 'main'
+- task: SynopsysSecurityScan@1
+  inputs:
+    scanType: 'polaris'
+    bridge_polaris_serverUrl: '$(BRIDGE_POLARIS_SERVERURL)'
+    bridge_polaris_accessToken: '$(BRIDGE_POLARIS_ACCESSTOKEN)'
+    bridge_polaris_application_name: 'KyleHWithDAST'
+    bridge_polaris_project_name: 'SignatureScanDemo'
+    bridge_polaris_assessment_types: 'SCA'
+    bridge_polaris_branch_name: 'main'
